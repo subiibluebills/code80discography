@@ -22,11 +22,9 @@
     <h1>Дискография</h1>
     <p class="lead">Нажмите на обложку, чтобы открыть треклист альбома.</p>
 
-    <!-- ===== Панель фильтров ===== -->
     <div class="filters">
       <div class="filters-row">
 
-        <!-- Фильтр 1: год. Список годов JS заполнит сам из карточек -->
         <div class="filter">
           <label for="f-year">Год выпуска</label>
           <select id="f-year">
@@ -34,7 +32,6 @@
           </select>
         </div>
 
-        <!-- Фильтр 2: количество треков -->
         <div class="filter">
           <label for="f-tracks">Количество треков</label>
           <select id="f-tracks">
@@ -45,7 +42,6 @@
           </select>
         </div>
 
-        <!-- Фильтр 3: общая длительность альбома. Максимум JS выставит сам -->
         <div class="filter">
           <label for="f-duration">Длительность: <span id="duration-value">любая</span></label>
           <input type="range" id="f-duration" min="0" max="70" step="5" value="70">
@@ -63,17 +59,10 @@
       По таким фильтрам ничего не нашлось. Попробуйте ослабить условия или сбросить фильтры.
     </p>
 
-    <!--
-      У каждой карточки три data-атрибута, по ним работают фильтры:
-        data-year      — год выпуска
-        data-tracks    — количество треков
-        data-duration  — общая длительность альбома в СЕКУНДАХ
-      При добавлении нового альбома заполните их так же.
-    -->
     <div class="album-grid">
 
         <a class="album-card" href="glatt3.html" data-year="2026" data-tracks="32" data-duration="3773">
-            <img src="assets/glatt3.jpg" alt="Обложка GLATT 3">
+            <img src="assets/glatt3.jpg" />
             <div class="meta">
                 <div class="year">2026</div>
                 <div class="title">GLATT 3</div>
@@ -82,7 +71,7 @@
         </a>
 
         <a class="album-card" href="glatt2.html" data-year="2025" data-tracks="27" data-duration="3179">
-            <img src="assets/glatt2.jpg" alt="Обложка GLATT 2">
+            <img src="assets/glatt2.jpg" />
             <div class="meta">
                 <div class="year">2025</div>
                 <div class="title">GLATT 2</div>
@@ -91,7 +80,7 @@
         </a>
 
         <a class="album-card" href="glatt.html" data-year="2025" data-tracks="22" data-duration="2573">
-            <img src="assets/glatt1_300x300.jpg" alt="Обложка GLATT">
+            <img src="assets/glatt1_300x300.jpg" />
             <div class="meta">
                 <div class="year">2025</div>
                 <div class="title">GLATT</div>
@@ -100,7 +89,7 @@
         </a>
 
         <a class="album-card" href="hs6.html" data-year="2025" data-tracks="8" data-duration="912">
-            <img src="assets/hs6.jpg" alt="Обложка HELL SESSIONS 6">
+            <img src="assets/hs6.jpg" />
             <div class="meta">
                 <div class="year">2025</div>
                 <div class="title">HELL SESSIONS 6</div>
@@ -109,7 +98,7 @@
         </a>
 
         <a class="album-card" href="totd4.html" data-year="2024" data-tracks="8" data-duration="791">
-            <img src="assets/totd4_300x300.jpg" alt="Обложка Tears of the Dragon 4">
+            <img src="assets/totd4_300x300.jpg" />
             <div class="meta">
                 <div class="year">2024</div>
                 <div class="title">Tears of the Dragon 4</div>
