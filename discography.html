@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Дискография — CODE80</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css" id="main-style">
+<link rel="stylesheet" href="print.css" id="print-style" media="not all">
 </head>
 <body>
 <div class="shell">
@@ -19,50 +20,64 @@
       <a href="about.html">об исполнителе</a>
     </nav>
 
+    <div class="tools">
+      <button type="button" class="btn" id="print-toggle">версия для печати</button>
+      <button type="button" class="btn" id="print-now" hidden>напечатать</button>
+    </div>
+
     <h1>Дискография</h1>
     <p class="lead">Нажмите на обложку, чтобы открыть треклист альбома.</p>
 
+    <!-- ===== Умный фильтр: три группы чекбоксов ===== -->
     <div class="filters">
       <div class="filters-row">
 
-        <div class="filter">
-          <label for="f-year">Год выпуска</label>
-          <select id="f-year">
-            <option value="all">Все годы</option>
-          </select>
-        </div>
+        <!-- Группа 1: год. Чекбоксы с годами JS создаёт сам из карточек -->
+        <fieldset class="filter" id="f-year">
+          <legend>Год выпуска</legend>
+        </fieldset>
 
-        <div class="filter">
-          <label for="f-tracks">Количество треков</label>
-          <select id="f-tracks">
-            <option value="all">Любое</option>
-            <option value="1-10">до 10</option>
-            <option value="11-25">от 11 до 25</option>
-            <option value="26-999">26 и больше</option>
-          </select>
-        </div>
+        <!-- Группа 2: количество треков.
+             value = "от-до", правая граница не входит: "1-11" значит от 1 до 10 -->
+        <fieldset class="filter" id="f-tracks">
+          <legend>Количество треков</legend>
+          <label class="check"><input type="checkbox" name="tracks" value="1-11"><span>до 10</span> <span class="count"></span></label>
+          <label class="check"><input type="checkbox" name="tracks" value="11-26"><span>11–25</span> <span class="count"></span></label>
+          <label class="check"><input type="checkbox" name="tracks" value="26-1000"><span>26 и больше</span> <span class="count"></span></label>
+        </fieldset>
 
-        <div class="filter">
-          <label for="f-duration">Длительность: <span id="duration-value">любая</span></label>
-          <input type="range" id="f-duration" min="0" max="70" step="5" value="70">
-        </div>
+        <!-- Группа 3: длительность альбома. value в минутах, правая граница не входит -->
+        <fieldset class="filter" id="f-duration">
+          <legend>Длительность</legend>
+          <label class="check"><input type="checkbox" name="duration" value="0-20"><span>до 20 мин</span> <span class="count"></span></label>
+          <label class="check"><input type="checkbox" name="duration" value="20-50"><span>20–50 мин</span> <span class="count"></span></label>
+          <label class="check"><input type="checkbox" name="duration" value="50-1000"><span>более 50 мин</span> <span class="count"></span></label>
+        </fieldset>
 
       </div>
+
+      <p class="filters-hint">
+        Отмечайте галочками. Варианты, при которых ничего не найдётся, блокируются,
+        а в скобках указано, сколько альбомов даст каждый вариант.
+      </p>
 
       <div class="filters-bottom">
         <span id="result-count" aria-live="polite"></span>
-        <button type="button" id="reset-filters">сбросить фильтры</button>
+        <button type="button" class="btn" id="reset-filters">сбросить фильтры</button>
       </div>
     </div>
 
-    <p id="empty-message" class="lead" hidden>
-      По таким фильтрам ничего не нашлось. Попробуйте ослабить условия или сбросить фильтры.
-    </p>
-
+    <!--
+      У каждой карточки три data-атрибута, по ним работают фильтры:
+        data-year      — год выпуска
+        data-tracks    — количество треков
+        data-duration  — общая длительность альбома в СЕКУНДАХ
+      При добавлении нового альбома заполните их так же.
+    -->
     <div class="album-grid">
 
         <a class="album-card" href="glatt3.html" data-year="2026" data-tracks="32" data-duration="3773">
-            <img src="assets/glatt3.jpg" />
+            <img src="assets/glatt3.jpg" alt="Обложка GLATT 3">
             <div class="meta">
                 <div class="year">2026</div>
                 <div class="title">GLATT 3</div>
@@ -71,7 +86,7 @@
         </a>
 
         <a class="album-card" href="glatt2.html" data-year="2025" data-tracks="27" data-duration="3179">
-            <img src="assets/glatt2.jpg" />
+            <img src="assets/glatt2.jpg" alt="Обложка GLATT 2">
             <div class="meta">
                 <div class="year">2025</div>
                 <div class="title">GLATT 2</div>
@@ -80,7 +95,7 @@
         </a>
 
         <a class="album-card" href="glatt.html" data-year="2025" data-tracks="22" data-duration="2573">
-            <img src="assets/glatt1_300x300.jpg" />
+            <img src="assets/glatt1_300x300.jpg" alt="Обложка GLATT">
             <div class="meta">
                 <div class="year">2025</div>
                 <div class="title">GLATT</div>
@@ -89,7 +104,7 @@
         </a>
 
         <a class="album-card" href="hs6.html" data-year="2025" data-tracks="8" data-duration="912">
-            <img src="assets/hs6.jpg" />
+            <img src="assets/hs6.jpg" alt="Обложка HELL SESSIONS 6">
             <div class="meta">
                 <div class="year">2025</div>
                 <div class="title">HELL SESSIONS 6</div>
@@ -98,7 +113,7 @@
         </a>
 
         <a class="album-card" href="totd4.html" data-year="2024" data-tracks="8" data-duration="791">
-            <img src="assets/totd4_300x300.jpg" />
+            <img src="assets/totd4_300x300.jpg" alt="Обложка Tears of the Dragon 4">
             <div class="meta">
                 <div class="year">2024</div>
                 <div class="title">Tears of the Dragon 4</div>
@@ -125,6 +140,7 @@
   </div>
 </div>
 
+<script src="print-mode.js"></script>
 <script src="filter.js"></script>
 </body>
 </html>

@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Об исполнителе — CODE80</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css" id="main-style">
+<link rel="stylesheet" href="print.css" id="print-style" media="not all">
 </head>
 <body>
 <div class="shell">
@@ -18,6 +19,11 @@
       <a href="discography.html">дискография</a>
       <a href="about.html" aria-current="page">об исполнителе</a>
     </nav>
+
+    <div class="tools">
+        <button type="button" class="btn" id="print-toggle">версия для печати</button>
+        <button type="button" class="btn" id="print-now" hidden>напечатать</button>
+    </div>
 
     <h1>Об исполнителе</h1>
 
@@ -43,5 +49,6 @@
 
   </div>
 </div>
+<script src="print-mode.js"></script>
 </body>
 </html>

@@ -1,101 +1,144 @@
 // ============================================================
-// Фильтрация альбомов на странице «Дискография»
-// Три фильтра работают вместе (условие «И»): год, количество
-// треков, длительность. Результат обновляется сразу при
-// любом изменении, кнопка «применить» не нужна.
+// УМНЫЙ ФИЛЬТР альбомов (три группы чекбоксов: год, треки, длительность)
+//
+// Правила:
+//  - внутри одной группы галочки работают как «ИЛИ»
+//    (2025 или 2024), без галочек группа ничего не ограничивает;
+//  - между группами работает «И»
+//    (год подходит И количество треков подходит И длительность подходит);
+//  - «умная» часть: вариант, после выбора которого не осталось бы
+//    ни одного альбома, блокируется, а в скобках показывается,
+//    сколько альбомов даст каждый вариант.
 // ============================================================
 
-// --- 1. Находим нужные элементы на странице ---
-const cards = document.querySelectorAll('.album-card');
-
-const yearSelect     = document.getElementById('f-year');
-const tracksSelect   = document.getElementById('f-tracks');
-const durationSlider = document.getElementById('f-duration');
-const durationLabel  = document.getElementById('duration-value');
-const resultCount    = document.getElementById('result-count');
-const emptyMessage   = document.getElementById('empty-message');
-const resetButton    = document.getElementById('reset-filters');
+const cards       = document.querySelectorAll('.album-card');
+const resultCount = document.getElementById('result-count');
+const resetButton = document.getElementById('reset-filters');
 
 
-// --- 2. «Умная» настройка: фильтры подстраиваются под данные ---
+// --- 1. Годы создаём из карточек (чтобы не писать их в HTML вручную) ---
 
-// Берём годы из карточек, убираем повторы, сортируем от нового к старому
 const years = [...new Set([...cards].map(card => card.dataset.year))]
-    .sort((a, b) => b - a);
+    .sort((a, b) => b - a);   // от новых к старым
 
+const yearBox = document.getElementById('f-year');
 years.forEach(year => {
-    const option = document.createElement('option');
-    option.value = year;
-    option.textContent = year;
-    yearSelect.appendChild(option);
+    yearBox.insertAdjacentHTML('beforeend',
+        '<label class="check">' +
+            '<input type="checkbox" name="year" value="' + year + '">' +
+            '<span>' + year + '</span> <span class="count"></span>' +
+        '</label>');
 });
 
-// Максимум слайдера = самый длинный альбом, округлённый вверх до 5 минут
-const longestSeconds = Math.max(...[...cards].map(card => Number(card.dataset.duration)));
-const maxMinutes = Math.ceil(longestSeconds / 60 / 5) * 5;
-durationSlider.max = maxMinutes;
-durationSlider.value = maxMinutes;
+
+// --- 2. Описание трёх групп: как понять, подходит ли карточка под вариант ---
+
+// Проверка «число попадает в диапазон "от-до"» (правая граница не входит)
+function inRange(number, range) {
+    const [min, max] = range.split('-').map(Number);
+    return number >= min && number < max;
+}
+
+const groups = [
+    {
+        name: 'year',
+        matches: (card, value) => card.dataset.year === value
+    },
+    {
+        name: 'tracks',
+        matches: (card, value) => inRange(Number(card.dataset.tracks), value)
+    },
+    {
+        name: 'duration',
+        matches: (card, value) => inRange(Number(card.dataset.duration) / 60, value)  // секунды в минуты
+    }
+];
 
 
-// --- 3. Главная функция: показать только подходящие карточки ---
-function applyFilters() {
-    const selectedYear   = yearSelect.value;
-    const selectedTracks = tracksSelect.value;        // "all" или "от-до", например "11-25"
-    const maxSeconds     = Number(durationSlider.value) * 60;
-    const durationIsAny  = Number(durationSlider.value) === maxMinutes;
+// --- 3. Вспомогательные функции ---
 
-    // Подпись у слайдера
-    durationLabel.textContent = durationIsAny
-        ? 'любая'
-        : 'до ' + durationSlider.value + ' мин';
+// Все чекбоксы одной группы
+function inputsOf(group) {
+    return document.querySelectorAll('input[name="' + group.name + '"]');
+}
 
-    let shown = 0;
+// Что отмечено в группе сейчас, например ["2025", "2024"]
+function checkedValues(group) {
+    return [...inputsOf(group)].filter(input => input.checked).map(input => input.value);
+}
 
+// Подходит ли карточка под группу?
+function matchesGroup(card, group) {
+    const values = checkedValues(group);
+    if (values.length === 0) return true;                 // ничего не отмечено: группа не ограничивает
+    return values.some(value => group.matches(card, value));
+}
+
+// Сколько альбомов получится, если выбрать вариант value в группе group,
+// при этом остальные группы остаются как выбраны сейчас
+function countFor(group, value) {
+    let count = 0;
     cards.forEach(card => {
-        const year     = card.dataset.year;
-        const tracks   = Number(card.dataset.tracks);
-        const duration = Number(card.dataset.duration);
+        const fitsOption = group.matches(card, value);
+        const fitsOthers = groups
+            .filter(other => other !== group)
+            .every(other => matchesGroup(card, other));
+        if (fitsOption && fitsOthers) count++;
+    });
+    return count;
+}
 
-        // Проверка 1: год
-        const yearOk = selectedYear === 'all' || year === selectedYear;
 
-        // Проверка 2: количество треков
-        let tracksOk = true;
-        if (selectedTracks !== 'all') {
-            const [min, max] = selectedTracks.split('-').map(Number);
-            tracksOk = tracks >= min && tracks <= max;
-        }
+// --- 4. Главная функция: пересчитать всё после любого клика ---
 
-        // Проверка 3: длительность (альбом не длиннее выбранного значения)
-        const durationOk = duration <= maxSeconds;
+function update() {
+    // 4.1. Блокируем варианты, которые дали бы пустой результат.
+    // Если блокируется уже отмеченный вариант, снимаем с него галочку.
+    // Из-за этого могут измениться остальные варианты, поэтому повторяем,
+    // пока всё не уляжется.
+    let changed = true;
+    while (changed) {
+        changed = false;
+        groups.forEach(group => {
+            inputsOf(group).forEach(input => {
+                const count = countFor(group, input.value);
+                const label = input.parentElement;
 
-        // Карточка видна, только если прошла ВСЕ три проверки
-        const visible = yearOk && tracksOk && durationOk;
+                input.disabled = (count === 0);
+                label.classList.toggle('is-disabled', count === 0);
+                label.querySelector('.count').textContent = '(' + count + ')';
+
+                if (input.disabled && input.checked) {
+                    input.checked = false;
+                    changed = true;
+                }
+            });
+        });
+    }
+
+    // 4.2. Показываем только подходящие карточки
+    let shown = 0;
+    cards.forEach(card => {
+        const visible = groups.every(group => matchesGroup(card, group));
         card.classList.toggle('is-hidden', !visible);
-
         if (visible) shown++;
     });
 
-    // Счётчик и сообщение «ничего не найдено»
     resultCount.textContent = 'Найдено: ' + shown + ' из ' + cards.length;
-    emptyMessage.hidden = shown !== 0;
 }
 
 
-// --- 4. Сброс всех фильтров ---
-function resetFilters() {
-    yearSelect.value = 'all';
-    tracksSelect.value = 'all';
-    durationSlider.value = maxMinutes;
-    applyFilters();
-}
+// --- 5. Подписки на действия пользователя ---
 
+document.querySelectorAll('.filters input').forEach(input => {
+    input.addEventListener('change', update);
+});
 
-// --- 5. Подписываемся на действия пользователя ---
-yearSelect.addEventListener('change', applyFilters);
-tracksSelect.addEventListener('change', applyFilters);
-durationSlider.addEventListener('input', applyFilters);   // input = обновляется пока двигаем ползунок
-resetButton.addEventListener('click', resetFilters);
+resetButton.addEventListener('click', () => {
+    document.querySelectorAll('.filters input').forEach(input => {
+        input.checked = false;
+    });
+    update();
+});
 
-// Первый запуск, чтобы сразу показать счётчик
-applyFilters();
+update();   // первый запуск: показать счётчики сразу при открытии страницы

@@ -1,0 +1,165 @@
+/* ==========================================================================
+   Версия для печати.
+   Этот файл ПОДМЕНЯЕТ style.css (скрипт print-mode.js включает один файл
+   и выключает другой), поэтому он самодостаточный: цвета и шрифты заданы
+   прямо здесь, на переменные из style.css он не опирается.
+   Идея: убрать всё оформление и вспомогательные блоки, оставить только
+   значимую информацию на белом фоне.
+   ========================================================================== */
+
+[hidden] { display: none !important; }
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: #fff;
+    color: #000;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 12pt;
+    line-height: 1.5;
+}
+
+a {
+    color: #000;
+    text-decoration: none;
+}
+
+/* ---------- Каркас: без рамок, фонов и отступов-оформления ---------- */
+
+.shell {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+.panel {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+/* ---------- Вспомогательные блоки: скрываем ---------- */
+
+nav.mainnav,       /* меню */
+.filters,          /* панель фильтров */
+.back-link,        /* ссылка «вся дискография» */
+p.lead,            /* подсказки интерфейса */
+footer a,          /* ссылки в подвале */
+img,               /* картинки (экономим чернила) */
+.site-logo .cursor {
+    display: none;
+}
+
+/* ---------- Заголовки ---------- */
+
+.site-logo {
+    display: block;
+    font-size: 11pt;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #000;
+    border-bottom: 2px solid #000;
+    padding-bottom: 6px;
+}
+
+h1 {
+    font-size: 22pt;
+    margin: 18pt 0 6pt;
+}
+
+h2 {
+    font-size: 14pt;
+    margin: 18pt 0 6pt;
+    padding-bottom: 3pt;
+    border-bottom: 1px solid #000;
+}
+
+p { margin: 0 0 8pt; }
+
+/* ---------- Блок «обложка + текст» без картинки ---------- */
+
+.album-header {
+    display: block;
+}
+
+/* ---------- Дискография: простой список строками ---------- */
+
+.album-grid {
+    display: block;
+}
+
+.album-card {
+    display: block;
+    padding: 6pt 0;
+    border-bottom: 1px solid #999;
+}
+
+.album-card.is-hidden {
+    display: none;
+}
+
+.album-card .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4pt 16pt;
+    align-items: baseline;
+}
+
+.album-card .year { min-width: 40pt; }
+
+.album-card .title {
+    font-weight: bold;
+    flex: 1;
+}
+
+/* ---------- Треклист ---------- */
+
+table.tracklist {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 6pt;
+}
+
+table.tracklist th,
+table.tracklist td {
+    border: 1px solid #000;
+    padding: 3pt 6pt;
+    text-align: left;
+}
+
+table.tracklist td.num { width: 30pt; }
+table.tracklist td.dur { width: 50pt; text-align: right; }
+
+/* ---------- Подвал ---------- */
+
+footer {
+    margin-top: 24pt;
+    padding-top: 6pt;
+    border-top: 1px solid #000;
+    font-size: 9pt;
+}
+
+/* ---------- Кнопки переключения: видны на экране, не печатаются ---------- */
+
+.tools {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.btn {
+    background: #f2f2f2;
+    color: #000;
+    border: 1px solid #000;
+    padding: 5px 12px;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+@media print {
+    .tools { display: none; }
+    .shell { max-width: none; margin: 0; padding: 0; }
+}

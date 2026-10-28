@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Tears of the Dragon 4 — CODE80</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" id="main-style">
+    <link rel="stylesheet" href="print.css" id="print-style" media="not all">
 </head>
 <body>
     <div class="shell">
@@ -19,7 +20,12 @@
                 <a href="about.html">об исполнителе</a>
             </nav>
 
-            <p style="margin-top:28px;"><a href="discography.html">← вся дискография</a></p>
+            <div class="tools">
+                <button type="button" class="btn" id="print-toggle">версия для печати</button>
+                <button type="button" class="btn" id="print-now" hidden>напечатать</button>
+            </div>
+
+            <p class="back-link" style="margin-top:28px;"><a href="discography.html">← вся дискография</a></p>
 
             <div class="album-header">
                 <img src="assets/totd4_300x300.jpg">
@@ -53,5 +59,6 @@
 
         </div>
     </div>
+<script src="print-mode.js"></script>
 </body>
 </html>

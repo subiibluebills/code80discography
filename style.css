@@ -258,8 +258,44 @@ a:focus-visible, .album-card:focus-visible {
     display: block;
 }
 
+/* Атрибут hidden должен всегда прятать элемент */
+[hidden] {
+    display: none !important;
+}
 
-/* ===== Фильтры на странице дискографии ===== */
+/* ===== Кнопки ===== */
+
+.btn {
+    background: transparent;
+    color: var(--accent-teal);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 6px 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+    .btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+
+    .btn:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+    }
+
+/* Строка с кнопками «версия для печати» под меню */
+.tools {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+
+/* ===== Умный фильтр на странице дискографии ===== */
 
 .filters {
     background: var(--bg-panel-raised);
@@ -271,41 +307,57 @@ a:focus-visible, .album-card:focus-visible {
 
 .filters-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 18px 24px;
 }
 
-.filter label {
-    display: block;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--text-dim);
-    margin-bottom: 8px;
+fieldset.filter {
+    border: none;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
 }
 
-    .filter label span {
-        color: var(--accent-teal);
+    fieldset.filter legend {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 12px;
+        color: var(--text-dim);
+        padding: 0;
+        margin-bottom: 6px;
     }
 
-.filter select {
-    width: 100%;
-    background: var(--bg-panel);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 9px 10px;
-    font-family: 'IBM Plex Sans', sans-serif;
+.check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
     font-size: 15px;
+    cursor: pointer;
 }
 
-    .filter select:focus-visible {
-        outline: 2px solid var(--accent);
-        outline-offset: 2px;
+    .check input {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        accent-color: var(--accent);
     }
 
-.filter input[type="range"] {
-    width: 100%;
-    accent-color: var(--accent);
+    .check .count {
+        color: var(--text-dim);
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 12px;
+    }
+
+    /* Недоступный вариант: он дал бы пустой результат */
+    .check.is-disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+    }
+
+.filters-hint {
+    margin: 16px 0 0;
+    font-size: 13px;
+    color: var(--text-dim);
 }
 
 .filters-bottom {
@@ -314,7 +366,7 @@ a:focus-visible, .album-card:focus-visible {
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 18px;
+    margin-top: 14px;
     padding-top: 14px;
     border-top: 1px solid var(--border);
     font-family: 'IBM Plex Mono', monospace;
@@ -322,28 +374,7 @@ a:focus-visible, .album-card:focus-visible {
     color: var(--text-dim);
 }
 
-#reset-filters {
-    background: transparent;
-    color: var(--accent-teal);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 6px 14px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-    #reset-filters:hover {
-        border-color: var(--accent);
-        color: var(--accent);
-    }
-
-    #reset-filters:focus-visible {
-        outline: 2px solid var(--accent);
-        outline-offset: 2px;
-    }
-
-/* Скрытая фильтром карточка */
+/* Карточка, скрытая фильтром */
 .album-card.is-hidden {
     display: none;
 }
