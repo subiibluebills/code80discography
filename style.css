@@ -258,12 +258,10 @@ a:focus-visible, .album-card:focus-visible {
     display: block;
 }
 
-/* Атрибут hidden должен всегда прятать элемент */
 [hidden] {
     display: none !important;
 }
 
-/* ===== Кнопки ===== */
 
 .btn {
     background: transparent;
@@ -286,16 +284,12 @@ a:focus-visible, .album-card:focus-visible {
         outline-offset: 2px;
     }
 
-/* Строка с кнопками «версия для печати» под меню */
 .tools {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
     margin-top: 14px;
 }
-
-
-/* ===== Умный фильтр на странице дискографии ===== */
 
 .filters {
     background: var(--bg-panel-raised);
@@ -348,7 +342,6 @@ fieldset.filter {
         font-size: 12px;
     }
 
-    /* Недоступный вариант: он дал бы пустой результат */
     .check.is-disabled {
         opacity: 0.35;
         cursor: not-allowed;
@@ -374,7 +367,95 @@ fieldset.filter {
     color: var(--text-dim);
 }
 
-/* Карточка, скрытая фильтром */
 .album-card.is-hidden {
     display: none;
+}
+
+@media print {
+    /* Сбрасываем фон страницы на чистый белый, а текст на черный */
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 12pt;
+    }
+
+    /* Убираем ограничения ширины и тени панели */
+    .shell {
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .panel {
+        background: none !important;
+        border: none !important;
+        padding: 0 !important;
+    }
+
+    /* СКРЫВАЕМ ВСЕ ИНТЕРАКТИВНЫЕ ЭЛЕМЕНТЫ: 
+       меню, панель фильтров, подсказки, кнопки и курсор логотипа */
+    nav.mainnav,
+    .filters,
+    .tools,
+    p.lead,
+    .site-logo .cursor {
+        display: none !important;
+    }
+
+    /* Красиво оформляем текстовый заголовок */
+    .site-logo {
+        display: block;
+        color: #000 !important;
+        border-bottom: 2px solid #000 !important;
+        padding-bottom: 6px;
+    }
+
+    h2 {
+        border-bottom: 1px solid #000 !important;
+    }
+
+    /* Превращаем сетку альбомов в аккуратный список строк для бумаги */
+    .album-grid {
+        display: block !important;
+    }
+
+    .album-card {
+        display: flex !important;
+        align-items: center !important;
+        gap: 14pt !important;
+        background: none !important;
+        border: none !important;
+        border-bottom: 1px solid #ccc !important;
+        padding: 10pt 0 !important;
+        page-break-inside: avoid; /* Чтобы альбом не разрывало пополам между страницами */
+    }
+
+        /* Скрытые фильтром карточки должны оставаться скрытыми */
+        .album-card.is-hidden {
+            display: none !important;
+        }
+
+        /* Делаем обложки компактными и экономим краску (черно-белые) */
+        .album-card img {
+            width: 60pt !important;
+            height: 60pt !important;
+            border: 1px solid #000 !important;
+            filter: grayscale(100%) !important;
+        }
+
+        .album-card .meta {
+            flex: 1 !important;
+            padding: 0 !important;
+        }
+
+            .album-card .meta .title {
+                color: #000 !important;
+                font-size: 14pt !important;
+            }
+
+            .album-card .meta .year,
+            .album-card .meta .info {
+                color: #555 !important;
+            }
 }
